@@ -1,31 +1,38 @@
 import CanvasUtil from './CanvasUtil.js';
-import GameItem from './GameItem.js';
+export default class Virus {
+  private image: HTMLImageElement;
 
-export default class Meteor extends GameItem {
+  private posX: number;
+
+  private posY: number;
+
+  private speed: number;
+
   private random: number = Math.random();
 
   public constructor() {
-    super();
-    const array = ['meteor_brown_big.png', 'meteor_brown_small.png', 'meteor_grey_big.png', 'meteor_grey_small.png'];
+    this.posY = Math.random() * 800;
+    this.posX = 1400;
+    this.speed = 0;
+    const array = ['virus-1.png', 'virus-2.png'];
     const random = Math.random();
     if (random >= 0.1) {
       if (Math.random() > 0.5) {
         this.image = CanvasUtil.loadNewImage('./assets/virus-1.png');
-        this.shieldModifier = -1;
       } else {
         this.image = CanvasUtil.loadNewImage('./assets/virus-2.png');
-        this.shieldModifier = -1;
       }
     } else if (Math.random() > 0.5) {
       this.image = CanvasUtil.loadNewImage('./assets/virus-1.png');
-      this.shieldModifier = -5;
     } else {
       this.image = CanvasUtil.loadNewImage('./assets/virus-2.png');
-      this.shieldModifier = -5;
-    };
-
+    }
   }
 
+  /**
+   *
+   * @param elapsed
+   */
   public update(elapsed: number): void {
     this.speed += 0.01;
     this.posX -= this.speed + 1;
@@ -36,5 +43,21 @@ export default class Meteor extends GameItem {
     } else {
       this.posY += 0;
     }
+  }
+
+  /**
+   *
+   * @param canvas
+   */
+  public render(canvas: HTMLCanvasElement) {
+    CanvasUtil.drawImage(canvas, this.image, this.posX, this.posY);
+  }
+
+  public getPosX(): number {
+    return this.posX;
+  }
+
+  public getPosY(): number {
+    return this.posY;
   }
 }

@@ -1,4 +1,3 @@
-import GameItem from './GameItem.js';
 import CanvasUtil from './CanvasUtil.js';
 import KeyListener from './KeyListener.js';
 import Virus from './Virus.js';
@@ -19,7 +18,7 @@ export default class Player {
     this.acceleration = 0;
   }
 
-  public itemCollided(item: GameItem): boolean {
+  public itemCollided(item: Virus): boolean {
     if (item.getPosY() >= this.posY - this.getHeight()
     && item.getPosY() <= this.posY + this.getHeight()
     && item.getPosX() >= this.posX - this.getWidth() / 2

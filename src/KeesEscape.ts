@@ -1,17 +1,18 @@
-import { Game } from "./GameLoop.js";
-import GameItem from "./GameItem.js";
-import Player from "./Player.js";
-import CanvasUtil from "./CanvasUtil.js";
-import KeyListener from "./KeyListener.js";
-import Virus from "./Virus.js";
-import Shield from "./Shield.js";
+import { Game } from './GameLoop.js';
+import Player from './Player.js';
+import CanvasUtil from './CanvasUtil.js';
+import KeyListener from './KeyListener.js';
+import Virus from './Virus.js';
+import Kees from './Kees.js';
 
-export default class SpaceEscape extends Game {
+export default class KeesEscape extends Game {
   private canvas: HTMLCanvasElement;
 
   private player: Player;
 
-  private items: GameItem[];
+  private items: Virus[];
+
+  private kees: Kees;
 
   private keyListener: KeyListener;
 
@@ -19,7 +20,7 @@ export default class SpaceEscape extends Game {
 
   private timeToNextItem: number;
 
-  private shieldsLeft: number;
+  private virusCount: number;
 
   private gamePaused: number;
 
@@ -33,20 +34,19 @@ export default class SpaceEscape extends Game {
     this.items = [];
     this.timeToNextItem = 0;
     this.timePassed = 0;
-    this.shieldsLeft = 20;
+    this.virusCount = 0;
+    this.gamePaused = 0;
   }
 
+  /**
+   *
+   */
   public processInput(): void {
-    if (this.keyListener.isKeyDown("ArrowUp")) {
+    if (this.keyListener.isKeyDown('ArrowUp')) {
       this.player.moveUp();
     }
-    if (this.keyListener.isKeyDown("ArrowDown")) {
+    if (this.keyListener.isKeyDown('ArrowDown')) {
       this.player.moveDown();
-    }
-    if (this.keyListener.isKeyDown("KeyP")) {
-      this.gamePaused = 1;
-    } else {
-      this.gamePaused = 0;
     }
   }
 
@@ -58,35 +58,29 @@ export default class SpaceEscape extends Game {
    */
   public update(elapsed: number): boolean {
     if (this.gamePaused === 0) {
-      if (this.shieldsLeft >= 1) {
-        this.player.Update(elapsed);
+      this.player.Update(elapsed);
 
-        this.timePassed += elapsed;
+      this.timePassed += elapsed;
 
-        if (this.timePassed >= 400) {
-          this.timePassed = 0;
-          this.shieldsLeft -= 0.33;
-          if (Math.random() >= 0.2) {
-            this.items.push(new Virus());
-          } else {
-            this.items.push(new Shield());
-          }
+      if (this.timePassed >= 400) {
+        this.timePassed = 0;
+        if (Math.random() >= 0.2) {
+          this.items.push(new Virus());
         }
-
-        this.items.forEach((item) => {
-          if (this.player.itemCollided(item)) {
-            this.shieldsLeft += item.getShieldModifier();
-            this.items.splice(this.items.indexOf(item), 1);
-          }
-          item.update(elapsed);
-        });
-        this.timeToNextItem += Math.floor(elapsed) / 1000;
-
-        return true;
       }
-      return false;
+
+      this.items.forEach((item) => {
+        if (this.player.itemCollided(item)) {
+          this.virusCount += 1;
+          this.items.splice(this.items.indexOf(item), 1);
+        }
+        item.update(elapsed);
+      });
+      this.timeToNextItem += Math.floor(elapsed) / 1000;
+
+      return true;
     }
-    return true;
+    return false;
   }
 
   /**
@@ -97,41 +91,48 @@ export default class SpaceEscape extends Game {
       CanvasUtil.clearCanvas(this.canvas);
 
       this.player.render(this.canvas);
-
       this.items.forEach((item) => {
         item.render(this.canvas);
       });
 
+      if (this.timePassed >= 20000) {
+        CanvasUtil.clearCanvas(this.canvas);
+
+        this.kees.render(this.canvas);
+      }
+
       CanvasUtil.writeTextToCanvas(
         this.canvas,
-        `Shields left: ${Math.floor(this.shieldsLeft)}`,
+        `Amount of viruses caught: ${Math.floor(this.virusCount)}`,
+        150,
         50,
-        50,
-        "center",
-        "Arial",
+        'center',
+        'Arial',
         20,
-        "white"
+        'white',
       );
       CanvasUtil.writeTextToCanvas(
         this.canvas,
         `Played time: ${Math.floor(this.timeToNextItem)}`,
-        50,
+        150,
         90,
-        "center",
-        "Arial",
+        'center',
+        'Arial',
         20,
-        "white"
+        'white',
       );
-      if (this.shieldsLeft <= 1) {
+      if (this.virusCount >= 10) {
+        this.gamePaused = 1;
+        console.log(this.gamePaused);
         CanvasUtil.writeTextToCanvas(
           this.canvas,
-          "Game over",
-          900,
-          500,
-          "right",
-          "Arial",
+          'Game over',
+          975,
+          400,
+          'right',
+          'Arial',
           90,
-          "white"
+          'white',
         );
       }
     }
