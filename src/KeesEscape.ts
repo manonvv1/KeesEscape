@@ -60,12 +60,12 @@ export default class KeesEscape extends Game {
   public update(elapsed: number): boolean {
     if (this.gamePaused === 0) {
       this.player.Update(elapsed);
+      this.kees.update(elapsed);
 
-      this.timePassed += elapsed;
-
-      if (this.timePassed >= 400) {
+      this.timePassed += Math.floor(elapsed);
+      if (this.timePassed >= 300 && this.timeToNextItem < 18) {
         this.timePassed = 0;
-        if (Math.random() >= 0.2) {
+        if (Math.random() >= 0.2 && this.timeToNextItem < 18) {
           this.items.push(new Virus());
         }
       }
@@ -78,7 +78,6 @@ export default class KeesEscape extends Game {
         item.update(elapsed);
       });
       this.timeToNextItem += Math.floor(elapsed) / 1000;
-
       return true;
     }
     return false;
@@ -90,36 +89,26 @@ export default class KeesEscape extends Game {
   public render(): void {
     if (this.gamePaused === 0) {
       CanvasUtil.clearCanvas(this.canvas);
-      this.kees.render(this.canvas);
 
       this.player.render(this.canvas);
-      this.items.forEach((item) => {
-        item.render(this.canvas);
-      });
-
-      // if (this.timePassed >= 20000) {
-      //   CanvasUtil.clearCanvas(this.canvas);
-
-      //   this.kees.render(this.canvas);
-      // }
 
       CanvasUtil.writeTextToCanvas(
         this.canvas,
         `Amount of viruses caught: ${Math.floor(this.virusCount)}`,
-        150,
-        50,
+        200,
+        60,
         'center',
-        'Arial',
+        'SF Pixelate',
         20,
         'white',
       );
       CanvasUtil.writeTextToCanvas(
         this.canvas,
         `Played time: ${Math.floor(this.timeToNextItem)}`,
-        150,
+        200,
         90,
         'center',
-        'Arial',
+        'SF Pixelate',
         20,
         'white',
       );
@@ -129,13 +118,22 @@ export default class KeesEscape extends Game {
         CanvasUtil.writeTextToCanvas(
           this.canvas,
           'Game over',
-          975,
+          1000,
           400,
           'right',
-          'Arial',
+          'SF Pixelate',
           90,
           'white',
         );
+      }
+      if (this.timeToNextItem >= 20) {
+        this.kees.render(this.canvas);
+      }
+
+      if (this.timeToNextItem < 20) {
+        this.items.forEach((item) => {
+          item.render(this.canvas);
+        });
       }
     }
   }

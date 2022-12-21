@@ -11,12 +11,15 @@ export default class Kees {
 
   private acceleration: number;
 
+  private randomNumber: number;
+
   public constructor(maxWidth: number, maxHeight: number) {
     this.image = CanvasUtil.loadNewImage('./assets/kees.png');
     this.posY = maxHeight / 2;
     this.posX = 1400;
     this.speed = 0;
     this.acceleration = 0;
+    this.randomNumber = Math.floor(Math.random() * window.innerHeight);
   }
 
   public getWidth(): number {
@@ -43,7 +46,19 @@ export default class Kees {
     return this.posY;
   }
 
-  public fire(): ShooterBullet {
-    return new ShooterBullet(this.posX, this.posY);
+  /**
+   *
+   * @param elapsed
+   */
+  public update(elapsed: number): void {
+    if (this.posY < this.randomNumber) {
+      this.posY += 1;
+    }
+    if (this.posY > this.randomNumber) {
+      this.posY -= 1;
+    }
+    if (this.posY === this.randomNumber) {
+      this.randomNumber = Math.floor(Math.random() * window.innerHeight);
+    }
   }
 }
