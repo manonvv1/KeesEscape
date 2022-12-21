@@ -31,6 +31,7 @@ export default class KeesEscape extends Game {
     this.canvas.width = window.innerWidth;
     this.keyListener = new KeyListener();
     this.player = new Player(this.canvas.width, this.canvas.height);
+    this.kees = new Kees(this.canvas.width, this.canvas.height);
     this.items = [];
     this.timeToNextItem = 0;
     this.timePassed = 0;
@@ -89,17 +90,18 @@ export default class KeesEscape extends Game {
   public render(): void {
     if (this.gamePaused === 0) {
       CanvasUtil.clearCanvas(this.canvas);
+      this.kees.render(this.canvas);
 
       this.player.render(this.canvas);
       this.items.forEach((item) => {
         item.render(this.canvas);
       });
 
-      if (this.timePassed >= 20000) {
-        CanvasUtil.clearCanvas(this.canvas);
+      // if (this.timePassed >= 20000) {
+      //   CanvasUtil.clearCanvas(this.canvas);
 
-        this.kees.render(this.canvas);
-      }
+      //   this.kees.render(this.canvas);
+      // }
 
       CanvasUtil.writeTextToCanvas(
         this.canvas,

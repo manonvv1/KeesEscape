@@ -9,11 +9,22 @@ export default class Kees {
 
   private speed: number;
 
-  public constructor() {
-    this.image = CanvasUtil.loadNewImage('./assets/ships.png');
+  private acceleration: number;
+
+  public constructor(maxWidth: number, maxHeight: number) {
+    this.image = CanvasUtil.loadNewImage('./assets/kees.png');
+    this.posY = maxHeight / 2;
     this.posX = 1400;
-    this.posY = Math.random() * 800;
     this.speed = 0;
+    this.acceleration = 0;
+  }
+
+  public getWidth(): number {
+    return this.image.width;
+  }
+
+  public getHeight(): number {
+    return this.image.height;
   }
 
   /**
@@ -21,6 +32,18 @@ export default class Kees {
    * @param canvas
    */
   public render(canvas: HTMLCanvasElement) {
+    CanvasUtil.drawImage(canvas, this.image, this.posX, this.posY);
+  }
 
+  public getPosX(): number {
+    return this.posX;
+  }
+
+  public getPosY(): number {
+    return this.posY;
+  }
+
+  public fire(): ShooterBullet {
+    return new ShooterBullet(this.posX, this.posY);
   }
 }

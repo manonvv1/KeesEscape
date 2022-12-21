@@ -1,4 +1,5 @@
 import CanvasUtil from './CanvasUtil.js';
+
 export default class Virus {
   private image: HTMLImageElement;
 

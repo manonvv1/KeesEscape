@@ -18,6 +18,10 @@ export default class Player {
     this.acceleration = 0;
   }
 
+  /**
+   *
+   * @param item
+   */
   public itemCollided(item: Virus): boolean {
     if (item.getPosY() >= this.posY - this.getHeight()
     && item.getPosY() <= this.posY + this.getHeight()
@@ -36,6 +40,9 @@ export default class Player {
     return this.image.height;
   }
 
+  /**
+   *
+   */
   public moveUp(): void {
     if (this.acceleration < -14) {
       this.acceleration = -14;
@@ -44,6 +51,9 @@ export default class Player {
     }
   }
 
+  /**
+   *
+   */
   public moveDown(): void {
     if (this.acceleration > 14) {
       this.acceleration = 14;
@@ -52,6 +62,10 @@ export default class Player {
     }
   }
 
+  /**
+   *
+   * @param elapsed
+   */
   public Update(elapsed: number): void {
     if (this.posY < -50) {
       this.posY = 800;
@@ -62,6 +76,10 @@ export default class Player {
     this.posY += this.acceleration;
   }
 
+  /**
+   *
+   * @param canvas
+   */
   public render(canvas: HTMLCanvasElement) {
     CanvasUtil.drawImage(canvas, this.image, 50, this.posY);
   }
